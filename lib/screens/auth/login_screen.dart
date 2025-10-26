@@ -1,4 +1,4 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../features/auth/data/auth_repository.dart';
@@ -39,10 +39,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               _passwordController.text.trim(),
             );
         // Navigation to the home screen will be handled by an auth wrapper
-      } on FirebaseAuthException catch (e) {
+      } on AuthException catch (e) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(e.message ?? 'Login failed')),
+            SnackBar(content: Text(e.message)),
           );
         }
       } catch (e) {
@@ -70,10 +70,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             _demoEmail,
             _demoPassword,
           );
-    } on FirebaseAuthException catch (e) {
+    } on AuthException catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(e.message ?? 'Demo login failed')),
+          SnackBar(content: Text(e.message)),
         );
       }
     } catch (e) {

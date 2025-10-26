@@ -1,4 +1,4 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../features/auth/data/auth_repository.dart';
@@ -32,16 +32,16 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
         _isLoading = true;
       });
       try {
-        final userCredential = await ref
+        final user = await ref
             .read(authRepositoryProvider)
             .createUserWithEmailAndPassword(
               _emailController.text.trim(),
               _passwordController.text.trim(),
             );
 
-        if (userCredential.user != null) {
+        if (user != null) {
           await ref.read(firestoreRepositoryProvider).addUser(
-                userCredential.user!.uid,
+                user.id,
                 _nameController.text.trim(),
                 _emailController.text.trim(),
               );
@@ -49,10 +49,10 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
         if (mounted) {
           Navigator.of(context).pop();
         }
-      } on FirebaseAuthException catch (e) {
+      } on AuthException catch (e) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(e.message ?? 'Registration failed')),
+            SnackBar(content: Text(e.message)),
           );
         }
       } finally {

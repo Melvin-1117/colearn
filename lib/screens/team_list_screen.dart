@@ -11,7 +11,7 @@ class TeamListScreen extends ConsumerStatefulWidget {
 }
 
 class _TeamListScreenState extends ConsumerState<TeamListScreen> {
-  final List<Team> _teams = [
+  List<Team> _teams = [
     Team(id: '1', name: 'Study Group Alpha', hostId: 'user1', createdAt: DateTime.now()),
     Team(id: '2', name: 'Math Masters', hostId: 'user2', createdAt: DateTime.now()),
     Team(id: '3', name: 'Science Squad', hostId: 'user3', createdAt: DateTime.now()),
@@ -39,17 +39,31 @@ class _TeamListScreenState extends ConsumerState<TeamListScreen> {
           ElevatedButton(
             onPressed: () {
               if (nameController.text.trim().isNotEmpty) {
-                // TODO: Add team to Firestore
+                _addTeam(nameController.text.trim());
                 Navigator.pop(context);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Team creation will be implemented soon!')),
-                );
               }
             },
             child: const Text('Create'),
           ),
         ],
       ),
+    );
+  }
+
+  void _addTeam(String teamName) {
+    final newTeam = Team(
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      name: teamName,
+      hostId: 'current_user_id', // TODO: Get actual user ID
+      createdAt: DateTime.now(),
+    );
+    
+    setState(() {
+      _teams = [..._teams, newTeam]; // Create a new list to ensure it's modifiable
+    });
+    
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Team "$teamName" created successfully!')),
     );
   }
 

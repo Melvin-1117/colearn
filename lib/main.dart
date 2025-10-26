@@ -1,12 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'firebase_options.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'features/auth/presentation/auth_wrapper.dart';
 
-void main() {
+const String supabaseUrl = 'https://rdzaigimmnvbsksvatw.supabase.co';
+const String supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJkemFpZ2ltbnZic2tzdmxhdGt3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjAwODc1NDMsImV4cCI6MjA3NTY2MzU0M30.ZJEsFMQkAcJMZjY9HPWcl_urgLZVqiYZRrq-fIhrJ3c';
+
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(const App());
+  
+  await Supabase.initialize(
+    url: supabaseUrl,
+    anonKey: supabaseAnonKey,
+  );
+  
+  runApp(const ProviderScope(child: App()));
 }
 
 class App extends StatelessWidget {
@@ -14,34 +22,7 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: Firebase.initializeApp(
-        options: DefaultFirebaseOptions.currentPlatform,
-      ),
-      builder: (context, snapshot) {
-        if (snapshot.hasError) {
-          return MaterialApp(
-            home: Scaffold(
-              body: Center(
-                child: Text('Error initializing Firebase: ${snapshot.error}'),
-              ),
-            ),
-          );
-        }
-
-        if (snapshot.connectionState == ConnectionState.done) {
-          return const ProviderScope(child: MyApp());
-        }
-
-        return const MaterialApp(
-          home: Scaffold(
-            body: Center(
-              child: CircularProgressIndicator(),
-            ),
-          ),
-        );
-      },
-    );
+    return const MyApp();
   }
 }
 

@@ -1,24 +1,26 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../auth/data/auth_repository.dart';
 
 class FirestoreRepository {
-  final FirebaseFirestore _firestore;
+  final SupabaseClient _supabaseClient;
 
-  FirestoreRepository(this._firestore);
+  FirestoreRepository(this._supabaseClient);
 
   Future<void> addUser(String userId, String name, String email) async {
-    await _firestore.collection('users').doc(userId).set({
-      'name': name,
-      'email': email,
-      'total_points': 0,
-    });
+    try {
+      await _supabaseClient.from('users').insert({
+        'id': userId,
+        'name': name,
+        'email': email,
+        'total_points': 0,
+      }).select(); // .select() is optional but recommended
+    } catch (e) {
+      rethrow;
+    }
   }
 }
 
-final firestoreProvider = Provider<FirebaseFirestore>((ref) {
-  return FirebaseFirestore.instance;
-});
-
 final firestoreRepositoryProvider = Provider<FirestoreRepository>((ref) {
-  return FirestoreRepository(ref.watch(firestoreProvider));
+  return FirestoreRepository(ref.watch(supabaseClientProvider));
 });

@@ -1,45 +1,47 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class AuthRepository {
-  final FirebaseAuth _firebaseAuth;
+  final SupabaseClient _supabaseClient;
 
-  AuthRepository(this._firebaseAuth);
+  AuthRepository(this._supabaseClient);
 
-  Stream<User?> get authStateChanges => _firebaseAuth.authStateChanges();
+  Stream<User?> get authStateChanges => 
+    _supabaseClient.auth.onAuthStateChange.map((data) => data.session?.user);
 
   Future<void> signInWithEmailAndPassword(String email, String password) async {
     try {
-      await _firebaseAuth.signInWithEmailAndPassword(
+      await _supabaseClient.auth.signInWithPassword(
         email: email,
         password: password,
       );
-    } on FirebaseAuthException {
+    } on AuthException {
       rethrow;
     }
   }
 
-  Future<UserCredential> createUserWithEmailAndPassword(
+  Future<User?> createUserWithEmailAndPassword(
       String email, String password) async {
     try {
-      return await _firebaseAuth.createUserWithEmailAndPassword(
+      final response = await _supabaseClient.auth.signUp(
         email: email,
         password: password,
       );
-    } on FirebaseAuthException {
+      return response.user;
+    } on AuthException {
       rethrow;
     }
   }
 
   Future<void> signOut() async {
-    await _firebaseAuth.signOut();
+    await _supabaseClient.auth.signOut();
   }
 }
 
-final firebaseAuthProvider = Provider<FirebaseAuth>((ref) {
-  return FirebaseAuth.instance;
+final supabaseClientProvider = Provider<SupabaseClient>((ref) {
+  return Supabase.instance.client;
 });
 
 final authRepositoryProvider = Provider<AuthRepository>((ref) {
-  return AuthRepository(ref.watch(firebaseAuthProvider));
+  return AuthRepository(ref.watch(supabaseClientProvider));
 });

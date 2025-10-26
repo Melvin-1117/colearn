@@ -1,5 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-
 class Task {
   final String id;
   final String title;
@@ -24,10 +22,10 @@ class Task {
       id: map['id'],
       title: map['title'],
       description: map['description'],
-      deadline: map['deadline'] != null ? (map['deadline'] as Timestamp).toDate() : null,
+      deadline: map['deadline'] != null ? DateTime.parse(map['deadline']) : null,
       teamId: map['team_id'],
       pointValue: map['point_value'] ?? 0,
-      createdAt: (map['created_at'] as Timestamp).toDate(),
+      createdAt: DateTime.parse(map['created_at']),
     );
   }
 }
