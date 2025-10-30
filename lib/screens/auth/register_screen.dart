@@ -32,19 +32,30 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
         _isLoading = true;
       });
       try {
-        final user = await ref
+        final response = await ref
             .read(authRepositoryProvider)
             .createUserWithEmailAndPassword(
               _emailController.text.trim(),
               _passwordController.text.trim(),
             );
 
-        if (user != null) {
-          await ref.read(firestoreRepositoryProvider).addUser(
-                user.id,
-                _nameController.text.trim(),
-                _emailController.text.trim(),
-              );
+        // Skip user table creation for now to test basic registration
+        if (response.user != null) {
+          // TODO: Create users table in Supabase and uncomment this
+          // await ref.read(firestoreRepositoryProvider).addUser(
+          //       response.user!.id,
+          //       _nameController.text.trim(),
+          //       _emailController.text.trim(),
+          //     );
+          
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Registration successful!'),
+                backgroundColor: Colors.green,
+              ),
+            );
+          }
         }
         if (mounted) {
           Navigator.of(context).pop();
@@ -52,7 +63,19 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
       } on AuthException catch (e) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(e.message)),
+            SnackBar(
+              content: Text('Auth Error: ${e.message}'),
+              duration: const Duration(seconds: 5),
+            ),
+          );
+        }
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('General Error: $e'),
+              duration: const Duration(seconds: 5),
+            ),
           );
         }
       } finally {

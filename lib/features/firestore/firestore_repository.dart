@@ -22,5 +22,5 @@ class FirestoreRepository {
 }
 
 final firestoreRepositoryProvider = Provider<FirestoreRepository>((ref) {
-  return FirestoreRepository(ref.watch(supabaseClientProvider));
+  return FirestoreRepository(ref.watch(supabaseProvider));
 });

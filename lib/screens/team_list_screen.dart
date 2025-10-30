@@ -73,6 +73,18 @@ class _TeamListScreenState extends ConsumerState<TeamListScreen> {
       appBar: AppBar(
         title: const Text('My Teams'),
         actions: [
+          // TEMPORARY: Logout disabled while auth is bypassed
+          IconButton(
+            onPressed: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Authentication temporarily bypassed')),
+              );
+            },
+            icon: const Icon(Icons.info),
+            tooltip: 'Auth Bypassed',
+          ),
+          // Commented out logout - uncomment when auth is restored
+          /*
           IconButton(
             onPressed: () async {
               await ref.read(authRepositoryProvider).signOut();
@@ -80,6 +92,7 @@ class _TeamListScreenState extends ConsumerState<TeamListScreen> {
             icon: const Icon(Icons.logout),
             tooltip: 'Logout',
           ),
+          */
         ],
       ),
       body: _teams.isEmpty

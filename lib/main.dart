@@ -9,12 +9,13 @@ const String supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJ
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
+  // Initialize Supabase client
   await Supabase.initialize(
     url: supabaseUrl,
     anonKey: supabaseAnonKey,
   );
-  
-  runApp(const ProviderScope(child: App()));
+
+  runApp(const App());
 }
 
 class App extends StatelessWidget {
@@ -22,7 +23,8 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MyApp();
+    // Replace the old FutureBuilder with a direct return since init is in main()
+    return const ProviderScope(child: MyApp());
   }
 }
 

@@ -42,7 +42,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       } on AuthException catch (e) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(e.message)),
+            SnackBar(content: Text(e.message ?? 'Login failed')),
           );
         }
       } catch (e) {
@@ -73,7 +73,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     } on AuthException catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(e.message)),
+          SnackBar(content: Text(e.message ?? 'Demo login failed')),
         );
       }
     } catch (e) {

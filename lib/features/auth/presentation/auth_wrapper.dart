@@ -15,6 +15,11 @@ class AuthWrapper extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // TEMPORARY: Skip authentication and go directly to TeamListScreen
+    return const TeamListScreen();
+    
+    // Commented out original auth logic - uncomment when you want auth back
+    /*
     final authState = ref.watch(authStateChangesProvider);
 
     return authState.when(
@@ -35,5 +40,6 @@ class AuthWrapper extends ConsumerWidget {
         ),
       ),
     );
+    */
   }
 }
